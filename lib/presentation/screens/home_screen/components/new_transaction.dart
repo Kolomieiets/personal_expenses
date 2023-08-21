@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class NewTransaction extends StatefulWidget {
   final void Function(String, double, DateTime) addTx;
 
-  NewTransaction(this.addTx);
+  const NewTransaction(this.addTx, {super.key});
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -15,6 +15,59 @@ class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController();
 
   DateTime? _selectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            TextField(
+              decoration: const InputDecoration(labelText: 'Title'),
+              controller: _titleController,
+              onSubmitted: (_) => _submitData(),
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Amount'),
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => _submitData(),
+            ),
+            SizedBox(
+              height: 70,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'No date chosen!'
+                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate!)}',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _presentDatePicker,
+                    child: const Text(
+                      'Choose Date',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _submitData,
+              child: const Text(
+                'Add transaction',
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   void _submitData() {
     if (_amountController.text.isEmpty) {
@@ -52,60 +105,5 @@ class _NewTransactionState extends State<NewTransaction> {
       },
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              // onChanged: (value) => titleInput = value,
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              // onChanged: (value) => amountInput = value,
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitData(),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No date chosen!'
-                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate!)}',
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: _presentDatePicker,
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            ElevatedButton(
-              // style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-              child: Text(
-                'Add transaction',
-              ),
-              onPressed: _submitData,
-            )
-          ],
-        ),
-      ),
-    );
-  }
+  
 }
